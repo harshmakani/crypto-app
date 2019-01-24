@@ -56,12 +56,12 @@ class App extends Component {
   provideSnapshot(buy, sell) {
     let buyArr = [];
     let sellArr = [];
-    
+
     buy.forEach((value) => {
       const [priceString, sizeString] = value;
       this.insertSorted({ orderArray: buyArr, orderToInsert: new OrderModel({ priceString, sizeString }) });
     });
-    
+
     sell.forEach((value) => {
       const [priceString, sizeString] = value;
       this.insertSorted({ orderArray: sellArr, orderToInsert: new OrderModel({ priceString, sizeString }) });
@@ -78,24 +78,21 @@ class App extends Component {
       switch (side) {
         case 'buy':
           if (sizeString === '0') {
-            //deleteOrderOfPrice({ orders: this.descendingBids, priceString })
-            break
+            this.deleteOrderOfPrice({ orders: buyArr, priceString })
+          } else {
+            this.insertSorted({ orderArray: buyArr, orderToInsert: new OrderModel({ priceString, sizeString }) });
           }
-          this.insertSorted({ orderArray: buyArr, orderToInsert: new OrderModel({ priceString, sizeString }) });
           const buy = buyArr.slice(0, 50);
-          console.log(buy);
-          this.setState({buy: buy});
+          this.setState({ buy: buy });
           break
         case 'sell':
           if (sizeString === '0') {
-            //deleteOrderOfPrice({ orders: this.descendingAsks, priceString })
-            break
+            this.deleteOrderOfPrice({ orders: sellArr, priceString });
+          } else {
+            this.insertSorted({ orderArray: sellArr, orderToInsert: new OrderModel({ priceString, sizeString }) });
           }
-          this.insertSorted({ orderArray: sellArr, orderToInsert: new OrderModel({ priceString, sizeString }) });
           const sell = sellArr.slice(0, 50);
-          console.log(sell);
           this.setState({ sell: sell });
-          //this.setState({sell: sellArr});
           break
         default:
           break // log error
@@ -114,19 +111,25 @@ class App extends Component {
     orderArray.push(orderToInsert);
   }
 
+  deleteOrderOfPrice({ orders, priceString }) {
+    const index = orders.findIndex((order) => order && order.priceString === priceString)
+    if (index === -1) { return }
+    orders.splice(index, 1)
+  }
+
   renderBuySell(value, classToDisplay) {
-      let returnArr = [];
-      value.map((row, index) => {
-        return returnArr.push (
-          <TableRow key={index}>
-            <TableCell component="th" scope="row" className={classToDisplay}>
-              {row.priceString}
-            </TableCell>
-            <TableCell align="right">{row.sizeString}</TableCell>
-          </TableRow>
-        );
-      })
-      return returnArr;
+    let returnArr = [];
+    value.map((row, index) => {
+      return returnArr.push(
+        <TableRow key={index}>
+          <TableCell component="th" scope="row" className={classToDisplay}>
+            {row.priceString}
+          </TableCell>
+          <TableCell align="right">{row.sizeString}</TableCell>
+        </TableRow>
+      );
+    })
+    return returnArr;
   }
 
   render() {

@@ -44,6 +44,6 @@ export default class WebSocketConnectionUtil extends EventEmitter {
         });
         webSocket.addEventListener('message', coinbaseMessageHandler.bind(this))
 
-        setTimeout(function () { webSocket.close() }, 10000);
+        //setTimeout(function () { webSocket.close() }, 10000);
     }
 }
