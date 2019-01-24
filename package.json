@@ -2,14 +2,14 @@
   "name": "crypto-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://harshmakani.github.io/crypto-app/",
   "dependencies": {
     "@material-ui/core": "^3.9.0",
     "gh-pages": "^2.0.1",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-scripts": "2.1.3",
-    "react-trading-ui": "^0.1.5",
-    "homepage": "https://harshmakani.github.io/crypto-app/"
+    "react-trading-ui": "^0.1.5"    
   },
   "scripts": {
     "start": "react-scripts start",
