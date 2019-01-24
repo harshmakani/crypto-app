@@ -36,23 +36,22 @@ class App extends Component {
     }
 
     this.state.orderBookSubscriber.on('snapshot', (snapshot) => {
-      const sell = snapshot['asks'].slice(0, 100);
+      // Displaying only first 50 items from buy and sell
+      const sell = snapshot['asks'].slice(0, 50);
 
-      const buy = snapshot['bids'].slice(0, 100);
+      const buy = snapshot['bids'].slice(0, 50);
 
       this.provideSnapshot(buy, sell);
     })
 
     this.state.orderBookSubscriber.on('l2update', (l2update) => {
-      //let sellArr = this.state.sell;
       this.provideL2Update(l2update);
-      if (l2update['changes'][0][0] === 'sell') {
-        //console.log(l2update['changes'][0][1] + ' ' + parseFloat(l2update['changes'][0][2]).toFixed(2))
-      }
-
     })
   }
 
+  /*
+   * creates snapshot of buy and sell first
+   */
   provideSnapshot(buy, sell) {
     let buyArr = [];
     let sellArr = [];
@@ -70,6 +69,9 @@ class App extends Component {
     this.setState({ buy: buyArr, sell: sellArr });
   }
 
+  /*
+   * updates buy and sell values as per l2update messages
+   */
   provideL2Update(l2update) {
     let buyArr = this.state.buy;
     let sellArr = this.state.sell;
@@ -95,11 +97,15 @@ class App extends Component {
           this.setState({ sell: sell });
           break
         default:
+          console.log('error');
           break // log error
       }
     })
   }
 
+  /*
+   * insert buy/sell values in sorted manner
+   */
   insertSorted({ orderArray, orderToInsert }) {
     for (let [index, order] of orderArray.entries()) {
       if (!order) { continue; }
@@ -111,12 +117,18 @@ class App extends Component {
     orderArray.push(orderToInsert);
   }
 
+  /*
+   * delete buy/sell row if size is 0
+   */
   deleteOrderOfPrice({ orders, priceString }) {
     const index = orders.findIndex((order) => order && order.priceString === priceString)
     if (index === -1) { return }
     orders.splice(index, 1)
   }
 
+  /*
+   * renders buy/sell rows
+   */
   renderBuySell(value, classToDisplay) {
     let returnArr = [];
     value.map((row, index) => {
